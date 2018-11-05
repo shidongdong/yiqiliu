@@ -1,0 +1,20 @@
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '8.0'
+
+target "一起遛" do
+
+pod 'AFNetworking', '~> 3.1.0'
+pod 'JSONModel', '~> 1.1.2'
+pod 'AMap2DMap', '~> 4.3.0'
+pod 'AMapSearch', '~> 4.2.0'
+pod 'MBProgressHUD', '~> 1.0.0'
+pod 'SDWebImage', '~> 3.8.1'
+pod 'Base64', '~> 1.1.2'
+pod 'SAMKeychain', '~> 1.5.1'
+pod 'Masonry', '~> 1.0.2'
+pod 'AliyunOSSiOS', '~> 2.5.2'
+pod 'GTSDK', '1.5.0-noidfa'
+pod 'FMDB', '~> 2.6.2'
+pod 'MJRefresh', '~> 3.1.12'
+pod 'UMengAnalytics-NO-IDFA', '~> 4.1.1'
+end

@@ -1,0 +1,115 @@
+//
+//  DDPlaceHolderTextView.m
+//  一起遛
+//
+//  Created by 栋栋 施 on 16/9/25.
+//  Copyright © 2016年 栋栋 施. All rights reserved.
+//
+
+#import "DDPlaceHolderTextView.h"
+#import "Masonry.h"
+#import "GlobConfig.h"
+@interface DDPlaceHolderTextView()
+
+@property (nonatomic, retain) UILabel *placeHolderLabel;
+@end
+
+@implementation DDPlaceHolderTextView
+
+CGFloat const UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION = 0.25;
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    
+    // Use Interface Builder User Defined Runtime Attributes to set
+    // placeholder and placeholderColor in Interface Builder.
+    if (!self.placeholder) {
+        [self setPlaceholder:@""];
+    }
+    
+    if (!self.placeholderColor) {
+        [self setPlaceholderColor:[UIColor lightGrayColor]];
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textChanged:) name:UITextViewTextDidChangeNotification object:nil];
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    if( (self = [super initWithFrame:frame]) )
+    {
+        [self setPlaceholder:@""];
+        [self setPlaceholderColor:[UIColor lightGrayColor]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textChanged:) name:UITextViewTextDidChangeNotification object:nil];
+    }
+    return self;
+}
+
+- (void)textChanged:(NSNotification *)notification
+{
+    if([[self placeholder] length] == 0)
+    {
+        return;
+    }
+    
+    [UIView animateWithDuration:UI_PLACEHOLDER_TEXT_CHANGED_ANIMATION_DURATION animations:^{
+        if([[self text] length] == 0)
+        {
+            [[self viewWithTag:999] setAlpha:1];
+        }
+        else
+        {
+            [[self viewWithTag:999] setAlpha:0];
+        }
+    }];
+}
+
+- (void)setText:(NSString *)text {
+    [super setText:text];
+    [self textChanged:nil];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    if( [[self placeholder] length] > 0 )
+    {
+        if (_placeHolderLabel == nil )
+        {
+//            WS(weakSelf)
+            _placeHolderLabel = [[UILabel alloc] initWithFrame:CGRectMake(8,8,self.bounds.size.width - 16,0)];
+            _placeHolderLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            _placeHolderLabel.numberOfLines = 0;
+            _placeHolderLabel.font = self.font;
+            _placeHolderLabel.backgroundColor = [UIColor clearColor];
+            _placeHolderLabel.textColor = self.placeholderColor;
+            _placeHolderLabel.alpha = 0;
+            _placeHolderLabel.tag = 999;
+            [self addSubview:_placeHolderLabel];
+//            [_placeHolderLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+//                make.left.equalTo(weakSelf.mas_left).with.offset(5);
+//                make.top.equalTo(weakSelf.mas_left).with.offset(5);
+//                make.size.mas_equalTo(CGSizeMake(weakSelf.bounds.size.width - 10, 0))
+//            }];
+        }
+        
+        _placeHolderLabel.text = self.placeholder;
+        [_placeHolderLabel sizeToFit];
+        [self sendSubviewToBack:_placeHolderLabel];
+    }
+    
+    if( [[self text] length] == 0 && [[self placeholder] length] > 0 )
+    {
+        [[self viewWithTag:999] setAlpha:1];
+    }
+    
+    [super drawRect:rect];
+}
+
+
+@end
